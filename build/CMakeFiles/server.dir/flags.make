@@ -6,5 +6,5 @@ CXX_DEFINES =
 
 CXX_INCLUDES = 
 
-CXX_FLAGS =  -Wall -I/usr/include/cppconn
+CXX_FLAGS =  -Wall -I/usr/include/cppconn -g
 

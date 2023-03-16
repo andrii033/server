@@ -523,29 +523,29 @@ server/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/build
 .PHONY : server/fast
 
-mysql.o: mysql.cpp.o
-.PHONY : mysql.o
+main.o: main.cpp.o
+.PHONY : main.o
 
 # target to build an object file
-mysql.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/mysql.cpp.o
-.PHONY : mysql.cpp.o
+main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/main.cpp.o
+.PHONY : main.cpp.o
 
-mysql.i: mysql.cpp.i
-.PHONY : mysql.i
+main.i: main.cpp.i
+.PHONY : main.i
 
 # target to preprocess a source file
-mysql.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/mysql.cpp.i
-.PHONY : mysql.cpp.i
+main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/main.cpp.i
+.PHONY : main.cpp.i
 
-mysql.s: mysql.cpp.s
-.PHONY : mysql.s
+main.s: main.cpp.s
+.PHONY : main.s
 
 # target to generate assembly for a file
-mysql.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/mysql.cpp.s
-.PHONY : mysql.cpp.s
+main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/main.cpp.s
+.PHONY : main.cpp.s
 
 # Help Target
 help:
@@ -587,9 +587,9 @@ help:
 	@echo "... NightlyTest"
 	@echo "... NightlyUpdate"
 	@echo "... server"
-	@echo "... mysql.o"
-	@echo "... mysql.i"
-	@echo "... mysql.s"
+	@echo "... main.o"
+	@echo "... main.i"
+	@echo "... main.s"
 .PHONY : help
 
 

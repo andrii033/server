@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/jaelf/Documents/cpp_prog/server/mysql.cpp" "CMakeFiles/server.dir/mysql.cpp.o" "gcc" "CMakeFiles/server.dir/mysql.cpp.o.d"
+  "/home/jaelf/Documents/cpp_prog/server/main.cpp" "CMakeFiles/server.dir/main.cpp.o" "gcc" "CMakeFiles/server.dir/main.cpp.o.d"
   )
 
 # Targets to which this target links.
