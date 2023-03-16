@@ -1,0 +1,1 @@
+/usr/bin/g++  -Wall -I/usr/include/cppconn -rdynamic CMakeFiles/server.dir/mysql.cpp.o -o server  -lmysqlcppconn 
