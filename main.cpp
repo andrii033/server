@@ -22,6 +22,9 @@ void *connection_handler(void *);
 void create_table();
 
 int main() {
+
+    create_table();
+
     int server_fd, new_socket;
     struct sockaddr_in address;
     int opt = 1;
@@ -106,7 +109,7 @@ void create_table()
         sql::Driver *driver;
         sql::Connection *con;
         sql::Statement *stmt;
-        sql::ResultSet *res;
+        //sql::ResultSet *res;
 
         /* Create a connection */
         driver = get_driver_instance();
@@ -116,17 +119,22 @@ void create_table()
         con->setSchema("my");
 
         stmt = con->createStatement();
-        res = stmt->executeQuery("SELECT 'Hello World!' AS _message"); // replace with your statement
-        while (res->next())
-        {
-            cout << "\t... MySQL replies: ";
-            /* Access column data by alias or column name */
-            cout << res->getString("_message") << endl;
-            cout << "\t... MySQL says it again: ";
-            /* Access column fata by numeric offset, 1 is the first column */
-            cout << res->getString(1) << endl;
-        }
-        delete res;
+        //res = stmt->executeQuery("SELECT 'Hello World!' AS _message"); // replace with your statement
+        stmt->execute("CREATE TABLE IF NOT EXISTS `my`.`users` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(255) NOT NULL , `email` VARCHAR(255) NOT NULL , `password` VARCHAR(255) NOT NULL , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
+        
+        stmt->execute("INSERT INTO `users` (`name`, `email`, `password`) VALUES ('test', 'test@test', 'test');");
+
+
+        // while (res->next())
+        // {
+        //     cout << "\t... MySQL replies: ";
+        //     /* Access column data by alias or column name */
+        //     cout << res->getString("_message") << endl;
+        //     cout << "\t... MySQL says it again: ";
+        //     /* Access column fata by numeric offset, 1 is the first column */
+        //     cout << res->getString(1) << endl;
+        // }
+        //delete res;
         delete stmt;
         delete con;
     }
