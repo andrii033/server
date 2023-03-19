@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/home/jaelf/Documents/cpp_prog/server/build",
-  "command": "/usr/bin/g++    -Wall -I/usr/include/cppconn -g -o CMakeFiles/server.dir/main.cpp.o -c /home/jaelf/Documents/cpp_prog/server/main.cpp",
-  "file": "/home/jaelf/Documents/cpp_prog/server/main.cpp"
-}
-]
