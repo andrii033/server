@@ -123,6 +123,7 @@ void create_table()
         stmt->execute("CREATE TABLE IF NOT EXISTS `my`.`users` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(255) NOT NULL , `email` VARCHAR(255) NOT NULL , `password` VARCHAR(255) NOT NULL , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
         
         stmt->execute("INSERT INTO `users` (`name`, `email`, `password`) VALUES ('test', 'test@test', 'test');");
+        stmt->execute("INSERT INTO `users` (`name`, `email`, `password`) VALUES ('test', 'test@test', 'test');");
 
 
         // while (res->next())
