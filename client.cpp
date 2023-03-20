@@ -16,6 +16,8 @@ int main()
     int sock = 0;
     struct sockaddr_in serv_addr;
     char buffer[1024] = {0};
+    char name[1024] = {0};
+    char password[1024] = {0};
 
     // Create a socket file descriptor
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
@@ -45,32 +47,33 @@ int main()
 
     cout << "Connected to server" << endl;
 
+    cout << "Enter name: ";
+    cin.getline(name, 1024);
+
+    cout << "Enter password: ";
+    cin.getline(password, 1024);
+
+    // Отправка имени и пароля
+    int name_length = strlen(name);
+    int password_length = strlen(password);
+    write(sock, &name_length, sizeof(name_length));
+    write(sock, name, name_length);
+    write(sock, &password_length, sizeof(password_length));
+    write(sock, password, password_length);
+
     while (true)
     {
         cout << "Enter message: ";
         cin.getline(buffer, 1024);
-
         send(sock, buffer, strlen(buffer), 0);
-        cout << "Sent: " << buffer << endl;
+        cout << "Sent message " << endl;
 
         memset(buffer, 0, sizeof(buffer));
 
         int valread = read(sock, buffer, 1024);
         cout << "Received: " << buffer << endl;
+    }
 
-    //     // Получаем ответ от сервера
-    //     char buffer[1024];
-    //     int bytes_received = recv(sock, buffer, 1024, 0);
-    //     if (bytes_received == -1)
-    //     {
-    //         cout << "Не удалось получить ответ от сервера" << endl;
-    //         return 1;
-    //     }
-
-    //     // Обрабатываем ответ от сервера
-    //     string response(buffer, bytes_received);
-    //     cout << "Ответ от сервера: " << response << endl;
-    // }
-
+    close(sock);
     return 0;
 }

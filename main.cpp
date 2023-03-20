@@ -20,8 +20,10 @@ using namespace std;
 
 void *connection_handler(void *);
 void create_table();
+int verify_user(const char *user_name, const char *user_password);
 
-int main() {
+int main()
+{
 
     create_table();
 
@@ -31,13 +33,15 @@ int main() {
     int addrlen = sizeof(address);
 
     // Create a socket file descriptor
-    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
+    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
+    {
         perror("socket failed");
         exit(EXIT_FAILURE);
     }
 
     // Set socket options
-    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
+    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
+    {
         perror("setsockopt");
         exit(EXIT_FAILURE);
     }
@@ -47,29 +51,34 @@ int main() {
     address.sin_port = htons(PORT);
 
     // Bind the socket to the specified address and port
-    if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
+    if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
+    {
         perror("bind failed");
         exit(EXIT_FAILURE);
     }
 
     // Listen for incoming connections
-    if (listen(server_fd, 3) < 0) {
+    if (listen(server_fd, 3) < 0)
+    {
         perror("listen");
         exit(EXIT_FAILURE);
     }
 
     cout << "Listening on port " << PORT << endl;
 
-    while (true) {
-        if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) < 0) {
+    while (true)
+    {
+        if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t *)&addrlen)) < 0)
+        {
             perror("accept");
             exit(EXIT_FAILURE);
         }
 
-        cout << "New connection established "<<new_socket << endl;
+        cout << "New connection established " << new_socket << endl;
 
         pthread_t thread_id;
-        if (pthread_create(&thread_id, NULL, connection_handler, (void*)&new_socket) < 0) {
+        if (pthread_create(&thread_id, NULL, connection_handler, (void *)&new_socket) < 0)
+        {
             perror("pthread_create");
             exit(EXIT_FAILURE);
         }
@@ -78,27 +87,51 @@ int main() {
     return 0;
 }
 
-void *connection_handler(void *socket_desc) {
-    int sock = *(int*)socket_desc;
+void *connection_handler(void *socket_desc)
+{
+    int sock = *(int *)socket_desc;
     char buffer[1024] = {0};
-    int valread;
 
-    while ((valread = read(sock, buffer, 1024)) > 0) {
-        cout << "Received " <<sock <<" :" << buffer << endl;
-        //send(sock, buffer, strlen(buffer), 0);
-        send(sock,"messege send",strlen("messege send"),0);
-        memset(buffer, 0, sizeof(buffer));
-    }
+    // Чтение имени и пароля из сокета
+    int name_length, password_length;
+    read(sock, &name_length, sizeof(name_length));
+    char name[name_length];
+    read(sock, name, name_length);
+    read(sock, &password_length, sizeof(password_length));
+    // char password[password_length];
+    // read(sock, password, password_length);
+    char *password = (char *)malloc(password_length + 1); // выделяем память для пароля
+    read(sock, password, password_length);
+    password[password_length] = '\0'; // устанавливаем нулевой символ в конце строки
 
-    if (valread == 0) {
-        cout << "Client disconnected "<< sock<< endl;
-    }
-    else {
-        perror("read");
-    }
+    cout << name << endl;
+    cout << password << endl;
+    send(sock, "messege send", strlen("messege send"), 0);
 
+    if (verify_user(name,password) == 1)
+    {
+
+        int valread;
+
+        while ((valread = read(sock, buffer, 1024)) > 0)
+        {
+            cout << "Received " << sock << " :" << buffer << endl;
+
+            send(sock, "messege send", strlen("messege send"), 0);
+            memset(buffer, 0, sizeof(buffer));
+        }
+
+        if (valread == 0)
+        {
+            cout << "Client disconnected " << sock << endl;
+        }
+        else
+        {
+            perror("read");
+        }
+    }
     close(sock);
-
+    free(password);
     return 0;
 }
 
@@ -109,7 +142,7 @@ void create_table()
         sql::Driver *driver;
         sql::Connection *con;
         sql::Statement *stmt;
-        //sql::ResultSet *res;
+        // sql::ResultSet *res;
 
         /* Create a connection */
         driver = get_driver_instance();
@@ -119,23 +152,12 @@ void create_table()
         con->setSchema("my");
 
         stmt = con->createStatement();
-        //res = stmt->executeQuery("SELECT 'Hello World!' AS _message"); // replace with your statement
+        // res = stmt->executeQuery("SELECT 'Hello World!' AS _message"); // replace with your statement
         stmt->execute("CREATE TABLE IF NOT EXISTS `my`.`users` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(255) NOT NULL , `email` VARCHAR(255) NOT NULL , `password` VARCHAR(255) NOT NULL , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
-        
-        stmt->execute("INSERT INTO `users` (`name`, `email`, `password`) VALUES ('test', 'test@test', 'test');");
-        stmt->execute("INSERT INTO `users` (`name`, `email`, `password`) VALUES ('test', 'test@test', 'test');");
 
+        // stmt->execute("INSERT INTO `users` (`name`, `email`, `password`) VALUES ('test', 'test@test', 'test');");
+        // stmt->execute("INSERT INTO `users` (`name`, `email`, `password`) VALUES ('test', 'test@test', 'test');");
 
-        // while (res->next())
-        // {
-        //     cout << "\t... MySQL replies: ";
-        //     /* Access column data by alias or column name */
-        //     cout << res->getString("_message") << endl;
-        //     cout << "\t... MySQL says it again: ";
-        //     /* Access column fata by numeric offset, 1 is the first column */
-        //     cout << res->getString(1) << endl;
-        // }
-        //delete res;
         delete stmt;
         delete con;
     }
@@ -150,4 +172,57 @@ void create_table()
     }
 
     cout << endl;
+}
+
+int verify_user(const char *user_name, const char *user_password)
+{
+    int ret = 0;
+    try
+    {
+        sql::Driver *driver;
+        sql::Connection *con;
+        sql::Statement *stmt;
+        sql::ResultSet *res;
+        
+
+        /* Создание объекта драйвера */
+        driver = get_driver_instance();
+
+        /* Подключение к базе данных */
+        con = driver->connect("tcp://localhost:3306", "debian-sys-maint", "PUAFKnCbBczs8rLS");
+
+        /* Выбор базы данных */
+        con->setSchema("my");
+
+        /* Создание объекта Statement */
+        stmt = con->createStatement();
+
+        /* Выполнение запроса */
+        res = stmt->executeQuery("SELECT * FROM users WHERE name='test' AND password='test'");
+
+        /* Обработка результатов запроса */
+        while (res->next())
+        {
+            if (res->getString("name") == user_name && res->getString("password") == user_password)
+            {
+                cout << "Username and password are correct!" << endl;
+                ret = 1;
+            }
+            else
+            {
+                cout << "Username or password are incorrect!" << endl;
+
+            }
+        }
+
+        /* Очистка ресурсов */
+        delete res;
+        delete stmt;
+        delete con;
+    }
+    catch (sql::SQLException &e)
+    {
+        cout << "Error: " << e.what() << endl;
+    }
+    return ret;
 }
